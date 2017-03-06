@@ -1,0 +1,41 @@
+---
+title: "Outlier Compare"
+author: "Tongfang Sun"
+date: "August 24, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Test 1 Compare
+
+
+```{r cars}
+## finding outliers
+
+final_test1 <- read.delim("F:/Research/To_Qi/final_test1.txt")
+cnn <- final_test1$V5
+linear <- final_test1$predi_value
+plot(1:length(linear),cnn-linear)
+abline(h = -1.5, col = "red")
+abline(h = 0.5, col = "red")
+
+
+
+upper <- which((linear - cnn) > 1.5)
+upper
+
+lower <- which((linear - cnn) < -0.5)
+lower
+
+```
+
+Example of linear is better:
+<img src = "C:\Users\z003nefs\Desktop\Research_Qi\compare\34.png" alt = "">
+
+<br > 
+Example of cnn is better:
+<img src = "C:\Users\z003nefs\Desktop\Research_Qi\compare\negative\270.png" alt = "">
+

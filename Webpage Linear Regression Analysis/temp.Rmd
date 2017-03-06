@@ -1,0 +1,152 @@
+---
+title: "Web Aesthetics Linear Regression Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This document is about website aesthetics based on 'Predicting Users' First Impressions of Website Aesthetics With a Quantification of Perceived Visual Complexity and Colorfulness' paper's model. The database is based on Intelligent Interactive System Group at Hardward. (url: http://iis.seas.harvard.edu/resources/aesthetics-chi14/)
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r raw_analysis}
+library(lme4)
+library(lmerTest)
+
+ae6 <- read.csv("C:/Users/z003nefs/Downloads/SupplementaryMaterials/ae_only_unambiguous_1000.csv")
+
+```
+
+
+In dataset, some data is missing or wrong. Thus, remove and recollect the data in this step
+```{r collect}
+
+## change character to factorial number
+EducationLevel <- as.factor(ae6$education.x)
+Gender <- as.factor((ae6$gender.x))
+Agegroup <- ae6$age.x
+colorfulnessmodel <- ae6$colorfulnessmodel
+complexitymodel <- ae6$complexitymodel
+StimulusID  <- ae6$website
+ParticipantID <- ae6$participant_id
+meanratingaesthetics <- ae6$mean_response
+
+
+# Gender filter (0, 1, 2 originally, 2 is the uncertain part, change as NA and remove them all)
+gen <- Gender
+for (i in 1:length(Gender)) {
+  if (gen[i] == 2) {
+    gen[i] = NA;
+  }
+}
+gen <- as.factor(gen)
+
+
+# split AgeGroup into 5 levels (<16, 16-25, 25-35, 35-45, > 45)
+AgeList <- Agegroup
+for (i in 1:length(Agegroup)) {
+  if (Agegroup[i] < 16) {
+    AgeList[i] = 1
+  } else if (Agegroup[i] < 25) {
+    AgeList[i] = 2
+  } else if (Agegroup[i] < 35) {
+    AgeList[i] = 3
+  } else if (Agegroup[i] < 45) {
+    AgeList[i] = 4
+  } else {
+    AgeList[i] = 5
+  }
+}
+
+Agegroup <- as.factor(AgeList)
+
+# rearrnage Educationlevel to 5 levels (pre, high, collge, phd, graduate)
+Education <- as.numeric(EducationLevel)
+edugroup <- c(1:length(Education))
+for (i in 1:length(Education)) {
+  if (Education[i]  == 1) {
+    edugroup[i] = 1
+  } else if (Education[i] == 2) {
+   edugroup[i] = 1 
+  } else if(Education[i] == 3) {
+    edugroup[i] = 2
+  } else if (Education[i]== 8) {
+    edugroup[i] = 2 
+  } else if (Education[i] == 4){
+      edugroup[i] = 3
+  } else if(Education[i] == 7) {
+    edugroup[i] = 5
+  } else {
+    edugroup[i] = 4
+  }
+}
+
+edugroup <- as.factor(edugroup)
+
+dat <- data.frame(c1 = meanratingaesthetics, c2 = gen, c3 = edugroup, c4 = Agegroup, c5 = colorfulnessmodel, c6 = complexitymodel, c7 = StimulusID, c8 = ParticipantID)
+dat <- na.omit(dat)
+
+meanratingaesthetics <- dat$c1
+gen <- as.factor(as.numeric(dat$c2))
+edugroup <- dat$c3
+Agegroup <- dat$c4
+colorfulnessmodel <- dat$c5
+complexitymodel <- dat$c6 
+StimulusID <- dat$c7
+ParticipantID <- dat$c8
+
+
+```
+
+### Fixed Linear Regression and Analysis
+
+You can also embed plots, for example:
+
+```{r model_analysis}
+fixed.lm <-lmer(meanratingaesthetics ~ (gen + edugroup + Agegroup) * (I(colorfulnessmodel^2) + I(complexitymodel^2)) + (1|StimulusID) + (1|ParticipantID), data = dat, REML = FALSE)
+
+
+# anova
+anova(fixed.lm)
+
+# p-value is not default value in lme4 package, then, use 
+summary(fixed.lm)
+
+# extract coefficients
+coefs <- data.frame(coef(summary(fixed.lm)))
+
+# use normal distribution to approximate p-value
+coefs$p.z <- 2* (1-pnorm(abs(coefs$t.value)))
+coefs
+
+# check qqplot graph to see the regression
+par(mfrow=c(2, 2))
+qqplot(edugroup, meanratingaesthetics)
+qqplot(Agegroup, meanratingaesthetics)
+qqplot(colorfulnessmodel^2, meanratingaesthetics)
+qqplot(complexitymodel^2, meanratingaesthetics)
+
+#check regression line
+lm.res <- resid(fixed.lm)
+par(mfrow=c(1, 1))
+plot(lm.res + meanratingaesthetics, meanratingaesthetics, ylab = "real rate", xlab = "lm.model estimate")
+abline(1:9, 1:9)
+
+# Pearson's correlation (compare itself)
+cor.test(meanratingaesthetics+lm.res, meanratingaesthetics)
+```
+
+
+
+### Group Analysis
+If only consider colorfulness and complexity model, rearrange the dataset
+
+```{r selected_data}
+
+
+
+```

@@ -1,0 +1,98 @@
+## PCA analysis
+a <- read.table("C:/Users/z003nefs/Desktop/Research_Qi/pca/a.txt", quote="\"", comment.char="")
+pca1 <- a$V1
+pca2 <- a$V2
+pca3 <- a$V3
+pca <- data.frame(pca1, pca2, pca3)
+length(pca1)
+
+
+train <- read.table("C:/Users/z003nefs/Desktop/Research_Qi/pca/train_list_single_rate.txt", quote="\"", comment.char="")
+name <- as.character(train$V1)
+rate <- train$V2
+#train$V1
+
+
+test <- read.table("C:/Users/z003nefs/Desktop/Research_Qi/pca/test_list_backup.txt", quote="\"", comment.char="")
+test_name <- as.character(test$V1)
+test_rate <- test$V2
+
+name
+all_name <- c(name, test_name)
+all_name
+
+
+all_rate <- c(rate, test_rate)
+
+all_table <- data.frame(all_name, all_rate, pca)
+all_table
+
+length(all_rate)
+length(pca1)
+
+qqplot(all_rate, pca1)
+qqnorm(pca1)
+
+
+train_full <- read.table("C:/Users/z003nefs/Desktop/Research_Qi/Test4/train_list_color_complx.txt", quote="\"", comment.char="")
+pca1_tr <- pca1[1:300]
+pca2_tr <- pca2[1:300]
+pca3_tr <- pca3[1:300]
+
+color <- train_full$V3
+complex <- train_full$V4
+#length(color
+qqplot(color[1:300], pca3_tr)
+qqnorm(pca3_tr)
+
+qqnorm(color[1:300])
+cor.test(color[1:300], pca3_tr)
+
+qqplot(color,train_full$V2)
+
+qqplot(pca2_tr, complex)
+
+
+length(train_full$V2)
+
+
+plot(pca1, all_rate)
+
+## Pearson COrrelation
+cor(pca[,1:3], method = "pearson")
+
+## group1
+
+## High PCA1 low rate
+plot(pca1, all_rate)
+upper <- which(pca1 > 6.5)
+upper
+all_rate[upper]
+lo_r_hi_p1 <- all_name[upper]
+
+## low PCA1 high rate
+lower <- which(pca1 < -7.5)
+lower
+all_rate[lower]
+hi_r_lo_p1 <- all_name[lower]
+
+
+## intermediate
+mid <- which(pca1 < 0.2 & pca1 > -0.2)
+mid
+all_rate[mid]
+mid_mid <- all_name[mid]
+
+
+## group2
+qqplot(pca2, all_rate)
+plot(pca2, all_rate)
+
+
+## group 3
+qqplot(pca3, all_rate)
+plot(pca3, all_rate)
+
+
+
+

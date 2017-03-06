@@ -1,0 +1,105 @@
+---
+title: "Comparable Regression Analysis 3 Non-Interact"
+author: "Tongfang Sun"
+date: "August 5, 2016"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+From the presivous analysis result, we try to find the pure relation between colorfullness/complexity and rating without considering user's gender, age, education' effects towards to model. Thus, we will regroup the dataset and then do the fitted linear regression model. Except, that, we will choose some web imgs as compare test after the model is finished. The imgs are eng(346, 347, 348, 349), webby(18, 19). grayscale(18, 19)...
+
+```{r dataset_format}
+train_dat <-  read.table("C:/Users/z003nefs/Downloads/website_aesthetic/exp3/train_list_color_complx.txt", quote="\"", comment.char="")
+valid_dat <- read.table("C:/Users/z003nefs/Downloads/website_aesthetic/exp3/valid_list_color_complx.txt", quote="\"", comment.char="")
+test_dat <- read.table("C:/Users/z003nefs/Downloads/website_aesthetic/exp3/test_list_color_complx.txt", quote="\"", comment.char="")
+
+web <- c(train_dat$V1, valid_dat$V1)
+rate <- c(train_dat$V2, valid_dat$V2)
+color <- c(train_dat$V3, valid_dat$V3)
+compl <- c(train_dat$V4, valid_dat$V4)
+dat_tarin <- data.frame(rate, color, compl)
+# analysis rate itself
+par(mfrow=c(1, 2))
+qqnorm(rate)
+qqline(rate, col = 2)
+hist(rate)
+
+
+#qqnorm(rate, color)
+par(mfrow=c(1, 2))
+qqplot(color, rate, xlab = "colorfullness", ylab = "mean rate value")
+qqplot(compl, rate, xlab = "complextymodel", ylab = "mean rate value")
+
+# Individual Pearson correlation (rate, colorfulness, complexity)
+df <- data.frame(rate, color, compl)
+plot(df[,1:3])
+cor(df[, 1:3], method = "pearson")
+```
+
+According to QQplot result, the colorfulness and complexity should fit the mean rate value by normal distribution approximately. Thus, We will try two different regression model to see the result: normal linear regression model and fitted linear regression model
+
+```{r regression_model}
+n.lm <- lm(rate ~ color + compl, data = dat_tarin)
+summary(n.lm)
+anova(n.lm)
+par(mfrow=c(2,2))                 
+plot(n.lm)
+
+
+# Pearsonn's correlation (compare itself)
+par(mfrow=c(1, 1))
+resid.nlm <- resid(n.lm)
+plot(resid.nlm + rate, rate, ylab = "real rate", xlab = "nlm.model estimate")
+cor.test(resid.nlm+rate, rate)
+```
+
+
+After finish the model, we then use test_list_color_complx.txt to test the model
+
+```{r test}
+
+
+rate <- test_dat$V2
+color <- test_dat$V3
+compl <- test_dat$V4
+cnn <- test_dat$V5
+
+mytest <- data.frame(rate, color, compl)
+
+estimate <- predict(n.lm , newdata = mytest, se.fit = TRUE, interval = "prediction")
+predi_value <- estimate$fit[,1]
+
+gg <- as.numeric(n.lm$coefficients)
+manuel_list = c(1:length(rate))
+for (i in 1: length(mytest$rate)) {
+  manuel_list[i] = gg[1] + gg[2] * mytest$color[i] + gg[3] * mytest$compl[i]
+}
+manuel_list
+
+
+mytest <- data.frame(rate, color, compl, cnn)
+estimate <- predict(n.lm , newdata = mytest, se.fit = TRUE, interval = "prediction")
+
+predi_value <- manuel_list
+
+cor.test(mytest$rate, predi_value)
+qqplot(predi_value, mytest$rate, xlim=c(2, 8), ylim=c(2, 8))
+
+```
+
+
+After the linear model is done, we will compare the test result with CNN test result and real rate using  Person table.
+
+```{r compare}
+compare_table <- data.frame(mytest$rate, test_dat$V5, predi_value)
+plot(compare_table[,1:3])
+cor(compare_table[, 1:3], method = "pearson")
+qqplot(test_dat$V5, mytest$rate, xlim=c(2, 8), ylim=c(2, 8))
+```
+

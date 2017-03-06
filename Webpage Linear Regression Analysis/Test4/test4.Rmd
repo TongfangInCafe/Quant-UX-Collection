@@ -1,0 +1,338 @@
+---
+title: "Comparable Regression Analysis 4"
+author: "Tongfang Sun"
+date: "August 5, 2016"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+From the presivous analysis result, we try to find the pure relation between colorfullness/complexity and rating without considering user's gender, age, education' effects towards to model. Thus, we will regroup the dataset and then do the fitted linear regression model. Except, that, we will choose some web imgs as compare test after the model is finished. The imgs are eng(346, 347, 348, 349), webby(18, 19). grayscale(18, 19)...
+
+```{r dataset_format}
+library(ggplot2)
+train_dat <-  read.table("/Volumes/STF/Final_siemens/Research_Qi/Test4/train_list_color_complx.txt", quote="\"")
+test_dat <- read.table("/Volumes/STF/Final_siemens/Research_Qi/Test4/test_list_color_complx.txt", quote="\"")
+
+web <- c(train_dat$V1)
+rate <- c(train_dat$V2)
+color <- c(train_dat$V3)
+compl <- c(train_dat$V4)
+dat_tarin <- data.frame(rate, color, compl)
+# analysis rate itself
+par(mfrow=c(1, 2))
+qqnorm(rate)
+qqline(rate, col = 2)
+
+hist(rate)
+hist((compl)^0.4)
+
+hist(color)
+
+hist(color^0.4)
+
+#qqnorm(rate, color)
+par(mfrow=c(1, 2))
+qqplot(color, rate, xlab = "colorfullness", ylab = "mean rate value")
+qqplot(compl, rate, xlab = "complextymodel", ylab = "mean rate value")
+
+
+
+# Individual Pearson correlation (rate, colorfulness, complexity)
+df <- data.frame(rate, color, compl)
+plot(df[,1:3])
+cor(df[, 1:3], method = "pearson")
+```
+
+Normal Linear Regression (colorfulness + complexity)
+``` {r linear_regression_model}
+lm1 <- lm(rate ~ color + compl)
+summary(lm1)
+anova(lm1)
+# Pearsonn's correlation (compare itself)
+par(mfrow=c(1, 1))
+resid.nlm <- resid(lm1)
+plot(resid.nlm + rate, rate, ylab = "real rate", xlab = "nlm.model estimate")
+cor.test(resid.nlm+rate, rate)
+
+## Test
+rate <- test_dat$V2
+color <- test_dat$V3
+compl <- test_dat$V4
+cnn <- test_dat$V5
+
+mytest <- data.frame(rate, color, compl)
+estimate <- predict(lm1 , newdata = mytest, se.fit = TRUE, interval = "prediction")
+predi_value <- estimate$fit[,1]
+
+par(mfrow=c(1, 2))
+qqplot(color, rate)
+qqplot(compl, rate)
+
+mytest <- data.frame(rate, color, compl, cnn)
+estimate <- predict(lm1 , newdata = mytest)
+
+predi_value <- estimate
+par(mfrow=c(1, 1))
+cor.test(mytest$rate, predi_value)
+```
+
+
+Linear + Interaction
+``` {r linearn_model}
+lm1 <- lm(rate ~  color +  compl + color * compl)
+summary(lm1)
+anova(lm1)
+# Pearsonn's correlation (compare itself)
+par(mfrow=c(1, 1))
+resid.nlm <- resid(lm1)
+plot(resid.nlm + rate, rate, ylab = "real rate", xlab = "nlm.model estimate")
+cor.test(resid.nlm+rate, rate)
+
+## Test
+rate <- test_dat$V2
+color <- test_dat$V3
+compl <- test_dat$V4
+cnn <- test_dat$V5
+
+mytest <- data.frame(rate, color, compl)
+estimate <- predict(lm1 , newdata = mytest, se.fit = TRUE, interval = "prediction")
+predi_value <- estimate$fit[,1]
+
+par(mfrow=c(1, 2))
+qqplot(color, rate)
+qqplot(compl, rate)
+
+mytest <- data.frame(rate, color, compl, cnn)
+estimate <- predict(lm1 , newdata = mytest)
+
+predi_value <- estimate
+par(mfrow=c(1, 1))
+cor.test(mytest$rate, predi_value)
+```
+
+
+
+Linear + Interaction color reduce
+``` {r linear_regression_model2}
+lm1 <- lm(rate ~  compl + color * compl)
+summary(lm1)
+anova(lm1)
+# Pearsonn's correlation (compare itself)
+par(mfrow=c(1, 1))
+resid.nlm <- resid(lm1)
+plot(resid.nlm + rate, rate, ylab = "real rate", xlab = "nlm.model estimate")
+cor.test(resid.nlm+rate, rate)
+
+## Test
+rate <- test_dat$V2
+color <- test_dat$V3
+compl <- test_dat$V4
+cnn <- test_dat$V5
+
+mytest <- data.frame(rate, color, compl)
+estimate <- predict(lm1 , newdata = mytest, se.fit = TRUE, interval = "prediction")
+predi_value <- estimate$fit[,1]
+
+par(mfrow=c(1, 2))
+qqplot(color, rate)
+qqplot(compl, rate)
+
+mytest <- data.frame(rate, color, compl, cnn)
+estimate <- predict(lm1 , newdata = mytest)
+
+predi_value <- estimate
+par(mfrow=c(1, 1))
+cor.test(mytest$rate, predi_value)
+```
+
+
+Original 5 factor + interaction 0.62
+
+``` {r 3}
+lm1 <- lm(rate ~ color + compl + I(color^(exp(1))) + I(compl^(0.4)) + I(abs(color^3 - compl^3)) + color * compl)
+
+summary(lm1)
+anova(lm1)
+# Pearsonn's correlation (compare itself)
+par(mfrow=c(1, 1))
+resid.nlm <- resid(lm1)
+plot(resid.nlm + rate, rate, ylab = "real rate", xlab = "nlm.model estimate")
+cor.test(resid.nlm+rate, rate)
+
+## Test
+rate <- test_dat$V2
+color <- test_dat$V3
+compl <- test_dat$V4
+cnn <- test_dat$V5
+
+mytest <- data.frame(rate, color, compl)
+estimate <- predict(lm1 , newdata = mytest, se.fit = TRUE, interval = "prediction")
+predi_value <- estimate$fit[,1]
+
+par(mfrow=c(1, 2))
+qqplot(color, rate)
+qqplot(compl, rate)
+
+mytest <- data.frame(rate, color, compl, cnn)
+estimate <- predict(lm1 , newdata = mytest)
+
+predi_value <- estimate
+par(mfrow=c(1, 1))
+cor.test(mytest$rate, predi_value)
+```
+
+
+
+
+According to QQplot result, the colorfulness and complexity should fit the mean rate value by normal distribution approximately. Thus, We will try two different regression model to see the result: normal linear regression model and fitted linear regression model
+
+```{r regression_model}
+
+n.lm <- lm(rate ~ color + compl + I(color^(exp(1))) + I(compl^(0.4)) + I(abs(color^3 - compl^3)))
+summary(n.lm)
+anova(n.lm)
+par(mfrow=c(2,2))                 
+plot(n.lm)
+
+
+# Pearsonn's correlation (compare itself)
+par(mfrow=c(1, 1))
+resid.nlm <- resid(n.lm)
+plot(resid.nlm + rate, rate, ylab = "real rate", xlab = "nlm.model estimate")
+cor.test(resid.nlm+rate, rate)
+
+
+```
+
+
+After finish the model, we then use test_list_color_complx.txt to test the model
+
+```{r test}
+
+rate <- test_dat$V2
+color <- test_dat$V3
+compl <- test_dat$V4
+cnn <- test_dat$V5
+
+# color2 = color
+# 
+# for (i in 1:length(color)) {
+#      if(color[i] < 3.5) {
+#       color2[i] = color[i] * 0.8
+#     } else if (color[i] > 7) {
+#       color2[i] = color[i] * 1.8
+#     } else {
+#       color2[i] = color[i]
+#     }
+# }
+# 
+
+mytest <- data.frame(rate, color, compl)
+
+estimate <- predict(n.lm , newdata = mytest, se.fit = TRUE, interval = "prediction")
+predi_value <- estimate$fit[,1]
+
+par(mfrow=c(1, 2))
+qqplot(color, rate)
+qqplot(compl, rate)
+
+
+mytest <- data.frame(rate, color, compl, cnn)
+estimate <- predict(n.lm , newdata = mytest)
+
+predi_value <- estimate
+par(mfrow=c(1, 1))
+cor.test(mytest$rate, predi_value)
+
+final_data <- data.frame(test_dat, predi_value)
+
+```
+
+
+After the linear model is done, we will compare the test result with CNN test result and real rate using  Person table.
+
+```{r compare}
+compare_table <- data.frame(mytest$rate, test_dat$V5, predi_value)
+hist(mytest$rate)
+plot(compare_table[,1:3])
+cor(compare_table[, 1:3], method = "pearson")
+
+
+# CNN predict
+plot(test_dat$V5, mytest$rate, xlim=c(2, 7), ylim=c(2, 7), ylab = "Real Rate", xlab = "CNN predict rate")
+
+
+
+p1 <- ggplot(test_dat, aes(x = test_dat$V2, y = test_dat$V5)) + geom_point(colour = "#48b9f3", size = 3, alpha = 1)
+ 
+p1 + geom_smooth(method = lm, se = FALSE) + labs(x = "User Aesthetics Rating", y = "CNN Predict Rating") + xlim(2.2, 6.5) + ylim(2.2, 6.5) + theme_bw()
+
+
+# linear regression
+plot(predi_value, mytest$rate, xlim=c(2, 7), ylim=c(2, 7), ylab = "Real Rate", xlab = "regression predict rate")
+
+new_dat <- data.frame(test_dat, predi_value)
+p2 <- ggplot(new_dat, aes(x = new_dat$V2, y = predi_value)) + geom_point(colour = "#48b9f3", size = 3, alpha = 1)
+p2 + geom_smooth(method = lm, se = FALSE) + labs(x = "User Aesthetics Rating", y = "Linear Predict Rating") + xlim(2.2, 6.5) + ylim(2.2, 6.5) + theme_bw()
+
+
+# linear regression vs cnn
+plot(predi_value, test_dat$V5 , xlim=c(2, 7), ylim=c(2, 7), ylab = "CNN predict rate", xlab = "regression predict 
+rate")
+
+true_rate = new_dat$V2
+cnn_rate = new_dat$V5
+linear_rate = predi_value
+
+
+
+dat <- data.frame(xx =c(true_rate, cnn_rate, linear_rate), yy = rep(letters[1:3], each = length(cnn_rate)))
+
+
+## Histogram user aesthetics rating
+p4 <- ggplot(dat, aes(x = xx)) +
+  geom_histogram(data = subset(dat, yy == 'a'), aes(y = ..density..), binwidth=.6, colour="black", fill = "white", alpha = 0.5) + 
+  geom_density(data = subset(dat, yy == 'a'), fill = "#f7746c", colour = "#f7746c", alpha = 0.2) + xlim(1, 8)
+p4 + theme_bw() 
+
+
+## Histogram cnn predict rating
+p6 <- ggplot(dat, aes(x = xx)) +
+  geom_histogram(data = subset(dat, yy == 'b'), aes(y = ..density..), binwidth =.8, colour="black", fill = "white", alpha = 0.5) + 
+  geom_density(data = subset(dat, yy == 'b'), colour = "#05bdc2", fill = "#05bdc2", alpha = 0.2) + xlim(1, 8)
+  
+p6 + theme_bw() 
+
+
+p7 <- ggplot(dat, aes(x = xx)) +
+   geom_histogram(data = subset(dat, yy == 'a'), aes(y = ..density..), fill = "#f7746c", alpha = 0.5) +
+  geom_histogram(data = subset(dat, yy == 'b'), aes(y = ..density..), fill = "#05bdc2", alpha = 1) 
+  
+  p7 + theme_bw() 
+  
+# p4 + stat_function(fun = dnorm, args = list(mean = mean(cnn_rate), sd = sd(cnn_rate)), lwd = 2, color = "red")
+
+
+p5 <- ggplot(dat, aes(x = xx)) +geom_density(data = subset(dat, yy == 'a'), fill = NA, colour = "#f7746c", alpha = 1) + geom_density(data = subset(dat, yy == 'b'), fill = NA, colour = "#05bdc2", alpha = 1) + xlim(1,8) + labs(x = "rate")
+
+p5 + theme_bw()
+
+
+n = c(true_rate,cnn_rate)
+ggplot(new_dat, aes(new_dat$V2), colour = "red") + geom_density(fill = "red", alpha = 0.2) + xlim(1, 8)
+
+
+
+ggplot(new_dat, aes(new_dat$V4)) + geom_density(alpha = 0.1) + xlim(1, 8)
+
+
+```
+
+
+
