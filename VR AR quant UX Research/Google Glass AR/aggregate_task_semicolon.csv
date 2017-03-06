@@ -1,0 +1,67 @@
+Trial Date & Time;Subject;Experiment Condition;Task;Total Task Time (s);Note;Condition Code;Task Name
+8/08 11:05 am;10;Epson Moverio;3;89,329;;2;air filter
+8/08 11:05 am;10;Epson Moverio;4;203,956;;2;headlight
+8/08 10:53 am;10;Google Glass;1;77,585;;1;engine oil
+8/08 10:53 am;10;Google Glass;2;166,254;;1;fuse (exterior)
+8/08 11:27 am;10;LG Tablet;7;135,751;;3;battery
+8/08 11:27 am;10;LG Tablet;8;117,066;;3;fuse (interior)
+8/08 02:22 pm;11;Epson Moverio;1;63,335;;2;engine oil
+8/08 02:22 pm;11;Epson Moverio;2;117,741;;2;fuse (exterior)
+8/08 03:14 pm;11;Google Glass;7;278,895;;1;battery
+8/08 03:14 pm;11;Google Glass;8;79,228;;1;fuse (interior)
+8/08 03:06 pm;11;LG Tablet;5;71,327;;3;brake fluid
+8/08 03:06 pm;11;LG Tablet;6;80,537;;3;coolant
+8/08 04:22 pm;12;Epson Moverio;7;157,073;;2;battery
+8/08 04:22 pm;12;Epson Moverio;8;112,613;;2;fuse (interior)
+8/08 04:11 pm;12;Google Glass;5;124,821;;1;brake fluid
+8/08 04:11 pm;12;Google Glass;6;95,84;;1;coolant
+8/08 04:01 pm;12;LG Tablet;3;102,083;;3;air filter
+8/08 04:01 pm;12;LG Tablet;4;177,308;;3;headlight
+8/08 05:12 pm;13;Epson Moverio;5;84,792;;2;brake fluid
+8/08 05:12 pm;13;Epson Moverio;6;65,179;;2;coolant
+8/08 05:01 pm;13;Google Glass;3;113,983;;1;air filter
+8/08 05:01 pm;13;Google Glass;4;131,441;;1;headlight
+8/08 04:43 pm;13;LG Tablet;1;92,403;;3;engine oil
+8/08 04:43 pm;13;LG Tablet;2;123,795;;3;fuse (exterior)
+8/06 02:06 pm;2;Google Glass;1;61,545;;1;engine oil
+8/06 02:06 pm;2;Google Glass;2;78,333;;1;fuse (exterior)
+8/06 02:39 pm;2;LG Tablet;7;103,051;;3;battery
+8/06 02:39 pm;2;LG Tablet;8;73,736;;3;fuse (interior)
+8/06 03:23 pm;3;Epson Moverio;1;80,731;Looks at all instructions in one go;2;engine oil
+8/06 03:23 pm;3;Epson Moverio;2;119,437;Looks at all instructions in one go;2;fuse (exterior)
+8/06 03:57 pm;3;Google Glass;7;138,495;Looks at all instructions in one go;1;battery
+8/06 03:57 pm;3;Google Glass;8;122,273;Looks at all instructions in one go;1;fuse (interior)
+8/06 03:47 pm;3;LG Tablet;5;148,906;Looks at all instructions in one go;3;brake fluid
+8/06 03:47 pm;3;LG Tablet;6;62,726;Looks at all instructions in one go;3;coolant
+8/06 05:07 pm;4;Epson Moverio;7;129,641;;2;battery
+8/06 05:07 pm;4;Epson Moverio;8;119,696;;2;fuse (interior)
+8/06 05:00 pm;4;Google Glass;5;72,682;;1;brake fluid
+8/06 05:00 pm;4;Google Glass;6;74,318;;1;coolant
+8/06 04:51 pm;4;LG Tablet;3;113,195;;3;air filter
+8/06 04:51 pm;4;LG Tablet;4;66,079;;3;headlight
+8/07 10:45 am;5;Epson Moverio;5;70,774;;2;brake fluid
+8/07 10:45 am;5;Epson Moverio;6;68,235;;2;coolant
+8/07 10:37 am;5;Google Glass;3;96,507;;1;air filter
+8/07 10:37 am;5;Google Glass;4;109,305;;1;headlight
+8/07 10:17 am;5;LG Tablet;1;54,464;;3;engine oil
+8/07 10:17 am;5;LG Tablet;2;104,141;;3;fuse (exterior)
+8/07 02:05 pm;6;Google Glass;1;60,164;;1;engine oil
+8/07 02:05 pm;6;Google Glass;2;119,504;;1;fuse (exterior)
+8/07 02:53 pm;6;LG Tablet;7;93,7;;3;battery
+8/07 02:53 pm;6;LG Tablet;8;93,655;;3;fuse (interior)
+8/07 03:23 pm;7;Epson Moverio;1;65,058;;2;engine oil
+8/07 03:23 pm;7;Epson Moverio;2;73,088;;2;fuse (exterior)
+8/07 03:55 pm;7;Google Glass;7;153,692;;1;battery
+8/07 03:55 pm;7;Google Glass;8;75,327;;1;fuse (interior)
+8/07 03:47 pm;7;LG Tablet;5;61,353;;3;brake fluid
+8/07 03:47 pm;7;LG Tablet;6;77,11;;3;coolant
+8/07 04:59 pm;8;Google Glass;5;106,702;;1;brake fluid
+8/07 04:59 pm;8;Google Glass;6;74,324;;1;coolant
+8/07 04:52 pm;8;LG Tablet;3;85,932;;3;air filter
+8/07 04:52 pm;8;LG Tablet;4;114,989;;3;headlight
+8/08 10:13 am;9;Epson Moverio;5;109,052;;2;brake fluid
+8/08 10:13 am;9;Epson Moverio;6;74,461;;2;coolant
+8/08 10:00 am;9;Google Glass;3;87,97;;1;air filter
+8/08 10:00 am;9;Google Glass;4;91,76;;1;headlight
+8/08 09:54 am;9;LG Tablet;1;81,847;;3;engine oil
+8/08 09:54 am;9;LG Tablet;2;92,949;;3;fuse (exterior)
